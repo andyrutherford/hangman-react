@@ -11,9 +11,11 @@ function App() {
     setGameWord(str);
   };
 
+  const resetGameHandler = () => setGameWord('');
+
   return (
     <div className='App'>
-      <Header startNewGame={newGameHandler} />
+      <Header startNewGame={newGameHandler} resetGame={resetGameHandler} />
       {gameWord && <Game word={gameWord} />}
     </div>
   );

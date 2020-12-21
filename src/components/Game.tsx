@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react';
 import { useAlert } from '../hooks/useAlert';
+import Hangman from './Hangman';
+import Letters from './Letters';
 
 type Props = {
   word: string;
@@ -35,19 +37,10 @@ const Game: React.FC<Props> = ({ word }) => {
         type='text'
         onChange={(e) => letterHandler(e.target.value)}
         value={char}
-        disabled={!!alertText}
       />
       {alertText && <p style={{ color: 'red' }}>{alertText}</p>}
-      <div>
-        {myRef.current.map((a, b) => (
-          <input
-            key={a}
-            type='text'
-            value={matches[b] ? myRef.current[b] : '?'}
-            disabled
-          />
-        ))}
-      </div>
+      <Hangman />
+      <Letters word={myRef.current} matches={matches} />
       {JSON.stringify(matches)}
     </div>
   );
