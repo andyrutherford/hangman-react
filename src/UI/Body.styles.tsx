@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 export const Body = styled.div`
-  outline: 1px solid red;
   width: 200px;
   height: 500px;
   position: absolute;
@@ -17,6 +16,8 @@ export const Body = styled.div`
     width: 70px;
     height: 70px;
     border-radius: 50%;
+    border: 10px solid #000;
+    background-color: #fff;
   }
   .torso {
     top: 95px;
@@ -51,5 +52,40 @@ export const Body = styled.div`
     height: 80px;
     width: 10px;
     transform: rotate(-20deg);
+  }
+  .face > * {
+    position: absolute;
+  }
+  .face .left-eye {
+    height: 10px;
+    width: 10px;
+    top: 50px;
+    left: 95px;
+    transform: rotate(20deg);
+  }
+  .face .right-eye {
+    height: 10px;
+    width: 10px;
+    top: 60px;
+    left: 120px;
+    transform: rotate(20deg);
+  }
+  .face .mouth {
+    background-color: #000;
+    height: 5px;
+    width: 40px;
+    top: 85px;
+    left: 85px;
+    transform: rotate(20deg);
+  }
+  .face .tongue {
+    border: 5px solid red;
+    height: 12px;
+    width: 10px;
+    top: 84px;
+    left: 90px;
+    transform: rotate(20deg);
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
   }
 `;

@@ -1,11 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export const useAlert = (text: any, duration: any) => {
-  const [alertText, setAlertText] = useState(text);
+type Props = {
+  text: string;
+  type: string;
+  duration: number;
+};
 
-  setTimeout(() => {
-    setAlertText('');
-  }, 1000);
+export const useAlert = ({ text, type, duration }: any) => {
+  // const [alertText, setAlertText] = useState(text);
+  // const [alertType, setAlertType] = useState(type);
+  const [alert, setAlert] = useState({
+    text,
+    type,
+    duration,
+  });
+  useEffect(() => {
+    const alertTimeout = setTimeout(() => {
+      setAlert({ ...alert, text: '' });
+    }, duration);
+    return () => clearTimeout(alertTimeout);
+  }, [alert.text]);
 
-  return [alertText, setAlertText];
+  return [alert.text, alert.type, setAlert];
 };

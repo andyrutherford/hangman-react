@@ -1,3 +1,4 @@
+import { Input } from '@chakra-ui/react';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -18,11 +19,15 @@ const Letters: React.FC<Props> = ({ word, matches }) => {
   return (
     <LettersWrapper>
       {word.map((a, b) => (
-        <StyledLetter
+        <Input
           key={b}
           type='text'
-          value={matches[b] ? word[b] : '?'}
-          disabled
+          value={matches[b] ? a : '?'}
+          disabled={matches[b] ? false : true}
+          w='60px'
+          py={8}
+          textAlign='center'
+          fontSize={32}
         />
       ))}
     </LettersWrapper>

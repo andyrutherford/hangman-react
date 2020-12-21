@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 export const Scaffold = styled.div`
-  outline: 1px solid green;
   max-width: 400px;
   height: 600px;
   margin: auto;
@@ -13,7 +12,7 @@ export const Scaffold = styled.div`
   .bottom {
     bottom: 10px;
     left: 10px;
-    width: 100px;
+    width: 200px;
     height: 10px;
   }
   .middle {

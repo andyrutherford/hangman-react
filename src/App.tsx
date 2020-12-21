@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { ChakraProvider } from '@chakra-ui/react';
+
 import './App.css';
 import Game from './components/Game';
 import Header from './components/Header';
@@ -8,16 +10,18 @@ function App() {
   const [gameWord, setGameWord] = useState('');
 
   const newGameHandler = (str: string) => {
-    setGameWord(str);
+    setTimeout(() => {
+      setGameWord(str);
+    }, 150);
   };
 
   const resetGameHandler = () => setGameWord('');
 
   return (
-    <div className='App'>
+    <ChakraProvider>
       <Header startNewGame={newGameHandler} resetGame={resetGameHandler} />
       {gameWord && <Game word={gameWord} />}
-    </div>
+    </ChakraProvider>
   );
 }
 

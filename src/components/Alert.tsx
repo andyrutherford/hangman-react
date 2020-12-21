@@ -1,0 +1,23 @@
+import {
+  Alert as ChakraAlert,
+  AlertDescription,
+  AlertIcon,
+} from '@chakra-ui/react';
+import React from 'react';
+
+type Props = {
+  type: 'info' | 'warning' | 'success' | 'error' | undefined;
+  text: string;
+};
+
+const Alert: React.FC<Props> = ({ text, type }) => {
+  console.log('text: ', text, 'type: ', type);
+  return (
+    <ChakraAlert status={type}>
+      <AlertIcon />
+      <AlertDescription>{text}</AlertDescription>
+    </ChakraAlert>
+  );
+};
+
+export default Alert;

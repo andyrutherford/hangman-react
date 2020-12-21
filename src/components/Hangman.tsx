@@ -8,7 +8,12 @@ const HangmanWrapper = styled.div`
   border: 2px dashed #000;
 `;
 
-const Hangman = () => {
+type Props = {
+  incorrectGuesses: number;
+};
+
+const Hangman: React.FC<Props> = React.memo(({ incorrectGuesses }) => {
+  console.log('hangman render');
   return (
     <HangmanWrapper>
       <Scaffold>
@@ -17,15 +22,23 @@ const Hangman = () => {
         <div className='top'></div>
       </Scaffold>
       <Body>
-        <div className='left-leg'></div>
-        <div className='right-leg'></div>
-        <div className='torso'></div>
-        <div className='left-arm'></div>
-        <div className='right-arm'></div>
-        <div className='head'></div>
+        {incorrectGuesses >= 1 && <div className='left-leg'></div>}
+        {incorrectGuesses >= 2 && <div className='right-leg'></div>}
+        {incorrectGuesses >= 3 && <div className='torso'></div>}
+        {incorrectGuesses >= 4 && <div className='left-arm'></div>}
+        {incorrectGuesses >= 5 && <div className='right-arm'></div>}
+        {incorrectGuesses >= 6 && <div className='head'></div>}
+        {incorrectGuesses >= 7 && (
+          <div className='face'>
+            <div className='left-eye'>&#10060;</div>
+            <div className='right-eye'>&#10060;</div>
+            <div className='mouth'></div>
+            <div className='tongue'></div>
+          </div>
+        )}
       </Body>
     </HangmanWrapper>
   );
-};
+});
 
 export default Hangman;
