@@ -19,8 +19,10 @@ function App() {
 
   return (
     <ChakraProvider>
-      <Header startNewGame={newGameHandler} resetGame={resetGameHandler} />
-      {gameWord && <Game word={gameWord} />}
+      {gameWord === '' && (
+        <Header startNewGame={newGameHandler} resetGame={resetGameHandler} />
+      )}
+      {gameWord && <Game word={gameWord} resetGame={resetGameHandler} />}
     </ChakraProvider>
   );
 }

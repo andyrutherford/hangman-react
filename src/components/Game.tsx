@@ -1,43 +1,34 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAlert } from '../hooks/useAlert';
-import { InputLetter } from '../UI/InputLetter.styles';
 import Hangman from './Hangman';
 import Letters from './Letters';
 import Alert from './Alert';
 
 import {
   Container,
-  Heading,
   Input,
-  Button,
   useDisclosure,
-  Collapse,
-  Box,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  Stack,
-  Alert as ChakraAlert,
-  AlertIcon,
-  AlertDescription,
-  Fade,
-  SlideFade,
   ScaleFade,
+  Flex,
+  Divider,
+  Text,
+  Button,
 } from '@chakra-ui/react';
 
 type Props = {
   word: string;
+  resetGame: () => void;
 };
 
 const ALERT_TIMEOUT_DURATION = 3000;
 
-const Game: React.FC<Props> = ({ word }) => {
+const Game: React.FC<Props> = ({ word, resetGame }) => {
   const [char, setChar] = useState('');
-  const [alertText, alertType, setAlert] = useAlert({
-    text: '',
-    type: 'warning',
-    duration: ALERT_TIMEOUT_DURATION,
-  });
+  const [alertText, alertType, setAlert] = useAlert(
+    '',
+    'info',
+    ALERT_TIMEOUT_DURATION
+  );
   const myRef = useRef(word.split(''));
   const [matches, setMatches] = useState(() =>
     Array(myRef.current.length).fill(false)
@@ -49,20 +40,30 @@ const Game: React.FC<Props> = ({ word }) => {
     correct: [],
     incorrect: [],
   });
-  const [playerWin, setPlayerWin] = useState(false);
-  const [playerLose, setPlayerLose] = useState(false);
-  const { isOpen, onToggle } = useDisclosure();
+  // const [playerWin, setPlayerWin] = useState(false);
+  // const [playerLose, setPlayerLose] = useState(false);
+  const { isOpen, onToggle: componentOnToggle } = useDisclosure();
+  const inputRef = useRef<any>();
+  // useEffect(() => {
+  //   if (guesses.correct.length === word.length) {
+  //     setPlayerWin(true);
+  //   }
+  //   if (guesses.incorrect.length === 7) {
+  //     setPlayerLose(true);
+  //   }
+  // }, [guesses.correct, guesses.incorrect, word.length]);
+
+  // Refocus input after alert goes away and previous guess is cleared
+  useEffect(() => {
+    if (!alertText) {
+      inputRef.current.focus();
+    }
+  }, [alertText]);
 
   useEffect(() => {
-    if (guesses.correct.length === word.length) {
-      setPlayerWin(true);
-    }
-    if (guesses.incorrect.length === 7) {
-      setPlayerLose(true);
-    }
-  }, [guesses.correct, guesses.incorrect, word.length]);
-
-  useEffect(() => {}, []);
+    componentOnToggle();
+    // eslint-disable-next-line
+  }, []);
 
   const letterHandler = (letter: string) => {
     setChar(letter);
@@ -79,7 +80,6 @@ const Game: React.FC<Props> = ({ word }) => {
           type: 'success',
           duration: ALERT_TIMEOUT_DURATION,
         });
-        // setAlertText('Match!', 'success', ALERT_TIMEOUT_DURATION);
         setGuesses((currentGuesses) => ({
           ...currentGuesses,
           correct: [...currentGuesses.correct, letter],
@@ -102,27 +102,60 @@ const Game: React.FC<Props> = ({ word }) => {
       });
     }
 
-    setTimeout(() => setChar(''), 1000);
+    setTimeout(() => setChar(''), 3000);
   };
 
   return (
-    <ScaleFade in={true} initialScale={0.9}>
-      <Container centerContent>
-        <label htmlFor='guess-letter'>Guess a letter: </label>
-        <Input
-          id='guess-letter'
-          autoFocus
-          maxLength={1}
-          type='text'
-          onChange={(e) => letterHandler(e.target.value)}
-          value={char}
-          w='60px'
-          py={8}
-          textAlign='center'
-          fontSize={32}
-        />
-      </Container>
-      {alertText && <Alert text={alertText} type={alertType} />}
+    <ScaleFade in={isOpen} initialScale={0.9}>
+      <Button
+        onClick={() => {
+          componentOnToggle();
+          setTimeout(() => {
+            resetGame();
+          }, 150);
+        }}
+      >
+        Reset game
+      </Button>
+      <Flex
+        align='center'
+        justify='space-between'
+        height='100px'
+        border='1px'
+        borderColor='gray.200'
+        borderRadius='10px'
+        maxW='1000px'
+        mx='auto'
+      >
+        <Container centerContent>
+          <Flex align='center'>
+            <Text fontSize='2xl'>Guess a letter: </Text>
+            <Input
+              variant='flushed'
+              id='guess-letter'
+              autoFocus
+              maxLength={1}
+              type='text'
+              onChange={(e) => letterHandler(e.target.value)}
+              value={char}
+              w='60px'
+              py={8}
+              ml={5}
+              textAlign='center'
+              fontSize={32}
+              disabled={!!alertText}
+              ref={inputRef}
+            />
+          </Flex>
+        </Container>
+        <Divider orientation='vertical' height='80%' />
+        <Container>
+          <ScaleFade in={alertText} initialScale={0.9}>
+            <Alert text={alertText} type={alertType} />
+          </ScaleFade>
+        </Container>
+      </Flex>
+
       <Hangman incorrectGuesses={guesses.incorrect.length} />
       <Letters word={myRef.current} matches={matches} />
       {JSON.stringify(matches)}

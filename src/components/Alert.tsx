@@ -11,7 +11,6 @@ type Props = {
 };
 
 const Alert: React.FC<Props> = ({ text, type }) => {
-  console.log('text: ', text, 'type: ', type);
   return (
     <ChakraAlert status={type}>
       <AlertIcon />

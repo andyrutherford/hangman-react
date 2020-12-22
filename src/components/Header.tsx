@@ -12,12 +12,9 @@ import {
   FormLabel,
   FormHelperText,
   Stack,
-  Alert,
-  AlertIcon,
-  AlertDescription,
   SlideFade,
 } from '@chakra-ui/react';
-import { HeaderWrapper } from '../UI/Header.styles';
+import Alert from './Alert';
 
 import { useAlert } from '../hooks/useAlert';
 const ALERT_TIMEOUT_DURATION = 3000;
@@ -28,14 +25,13 @@ type Props = {
 };
 
 const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
-  const [newGame, setNewGame] = useState(false);
   const [word, setWord] = useState('abc');
-  const [ready, setReady] = useState(false);
-  const [alertText, alertType, setAlert] = useAlert({
-    text: '',
-    type: undefined,
-    duration: ALERT_TIMEOUT_DURATION,
-  });
+  const [alertText, alertType, setAlert] = useAlert(
+    '',
+    'info',
+    ALERT_TIMEOUT_DURATION
+  );
+
   const [loading, setLoading] = useState(false);
   const {
     isOpen: componentVisible,
@@ -55,9 +51,7 @@ const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      setNewGame(false);
       setWord('');
-      setReady(false);
       componentOnToggle();
       startNewGame(word);
     }, 2000);
@@ -85,7 +79,7 @@ const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
       <SlideFade in={componentVisible} offsetY='20px' unmountOnExit>
         <Container
           centerContent
-          py={5}
+          pt={5}
           mx='auto'
           border='1px'
           borderColor='gray.200'
@@ -96,7 +90,6 @@ const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
               m={5}
               colorScheme='blue'
               onClick={() => {
-                setNewGame(true);
                 resetGame();
                 onToggle();
               }}
@@ -112,6 +105,7 @@ const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
                     Create a word:{' '}
                   </FormLabel>
                   <Input
+                    variant='flushed'
                     autoFocus
                     id='new-game-input'
                     type='text'
@@ -145,15 +139,10 @@ const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
                 </form>
               </FormControl>
               <Collapse in={alertText} animateOpacity>
-                <Alert status='error' mt={3}>
-                  <AlertIcon />
-                  <AlertDescription>{alertText}</AlertDescription>
-                </Alert>
+                <Alert text={alertText} type={alertType} />
               </Collapse>
             </Box>
           </Collapse>
-
-          {/* {ready && <button onClick={startGameHandler}>Start Game!</button>} */}
         </Container>
       </SlideFade>
     </div>

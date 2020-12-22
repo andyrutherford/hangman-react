@@ -6,9 +6,11 @@ type Props = {
   duration: number;
 };
 
-export const useAlert = ({ text, type, duration }: any) => {
-  // const [alertText, setAlertText] = useState(text);
-  // const [alertType, setAlertType] = useState(type);
+type AlertType = {
+  type: 'info' | 'warning' | 'success' | 'error' | undefined;
+};
+
+export const useAlert = (text: string, type: any, duration: number) => {
   const [alert, setAlert] = useState({
     text,
     type,
@@ -20,6 +22,5 @@ export const useAlert = ({ text, type, duration }: any) => {
     }, duration);
     return () => clearTimeout(alertTimeout);
   }, [alert.text]);
-
   return [alert.text, alert.type, setAlert];
 };

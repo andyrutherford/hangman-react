@@ -1,21 +1,15 @@
+import { Container } from '@chakra-ui/react';
 import React from 'react';
-import styled from 'styled-components';
 import { Body } from '../UI/Body.styles';
 import { Scaffold } from '../UI/Scaffold.styles';
-
-const HangmanWrapper = styled.div`
-  position: relative;
-  border: 2px dashed #000;
-`;
 
 type Props = {
   incorrectGuesses: number;
 };
 
 const Hangman: React.FC<Props> = React.memo(({ incorrectGuesses }) => {
-  console.log('hangman render');
   return (
-    <HangmanWrapper>
+    <Container position='relative'>
       <Scaffold>
         <div className='bottom'></div>
         <div className='middle'></div>
@@ -37,7 +31,7 @@ const Hangman: React.FC<Props> = React.memo(({ incorrectGuesses }) => {
           </div>
         )}
       </Body>
-    </HangmanWrapper>
+    </Container>
   );
 });
 
