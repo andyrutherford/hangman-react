@@ -15,21 +15,25 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-type Props = {
-  word: string;
-  resetGame: () => void;
-};
+import {
+  gameWord as gameWordAtom,
+  gameStatus as gameStatusAtom,
+} from '../atoms/atoms';
+import { useRecoilState } from 'recoil';
+import { lettersOnly } from '../utils';
 
 const ALERT_TIMEOUT_DURATION = 3000;
 
-const Game: React.FC<Props> = ({ word, resetGame }) => {
+const Game: React.FC = () => {
+  const [gameWord, setGameWord] = useRecoilState(gameWordAtom);
+  const [gameStatus, setGameStatus] = useRecoilState(gameStatusAtom);
   const [char, setChar] = useState('');
   const [alertText, alertType, setAlert] = useAlert(
     '',
     'info',
     ALERT_TIMEOUT_DURATION
   );
-  const myRef = useRef(word.split(''));
+  const myRef = useRef(gameWord.split(''));
   const [matches, setMatches] = useState(() =>
     Array(myRef.current.length).fill(false)
   );
@@ -40,18 +44,17 @@ const Game: React.FC<Props> = ({ word, resetGame }) => {
     correct: [],
     incorrect: [],
   });
-  // const [playerWin, setPlayerWin] = useState(false);
-  // const [playerLose, setPlayerLose] = useState(false);
+
   const { isOpen, onToggle: componentOnToggle } = useDisclosure();
   const inputRef = useRef<any>();
-  // useEffect(() => {
-  //   if (guesses.correct.length === word.length) {
-  //     setPlayerWin(true);
-  //   }
-  //   if (guesses.incorrect.length === 7) {
-  //     setPlayerLose(true);
-  //   }
-  // }, [guesses.correct, guesses.incorrect, word.length]);
+  useEffect(() => {
+    if (guesses.correct.length === gameWord.length) {
+      setGameStatus({ ...gameStatus, win: true });
+    }
+    if (guesses.incorrect.length === 7) {
+      setGameStatus({ ...gameStatus, lose: true });
+    }
+  }, [guesses.correct, guesses.incorrect, gameWord.length]);
 
   // Refocus input after alert goes away and previous guess is cleared
   useEffect(() => {
@@ -60,12 +63,8 @@ const Game: React.FC<Props> = ({ word, resetGame }) => {
     }
   }, [alertText]);
 
-  useEffect(() => {
-    componentOnToggle();
-    // eslint-disable-next-line
-  }, []);
-
   const letterHandler = (letter: string) => {
+    console.log(letter);
     setChar(letter);
     if (myRef.current.includes(letter)) {
       if (guesses.correct.includes(letter)) {
@@ -106,12 +105,12 @@ const Game: React.FC<Props> = ({ word, resetGame }) => {
   };
 
   return (
-    <ScaleFade in={isOpen} initialScale={0.9}>
+    <ScaleFade in={true} initialScale={0.9}>
       <Button
         onClick={() => {
           componentOnToggle();
           setTimeout(() => {
-            resetGame();
+            setGameWord('');
           }, 150);
         }}
       >
@@ -136,7 +135,10 @@ const Game: React.FC<Props> = ({ word, resetGame }) => {
               autoFocus
               maxLength={1}
               type='text'
-              onChange={(e) => letterHandler(e.target.value)}
+              onChange={(e) =>
+                lettersOnly(e.target.value) !== '' &&
+                letterHandler(lettersOnly(e.target.value))
+              }
               value={char}
               w='60px'
               py={8}

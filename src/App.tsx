@@ -1,29 +1,17 @@
-import { useState } from 'react';
-
 import { ChakraProvider } from '@chakra-ui/react';
 
 import './App.css';
 import Game from './components/Game';
 import Header from './components/Header';
 
+import { gameWord as gameWordAtom } from './atoms/atoms';
+import { useRecoilValue } from 'recoil';
+
 function App() {
-  const [gameWord, setGameWord] = useState('');
-
-  const newGameHandler = (str: string) => {
-    setTimeout(() => {
-      setGameWord(str);
-    }, 150);
-  };
-
-  const resetGameHandler = () => setGameWord('');
+  const gameWord = useRecoilValue(gameWordAtom);
 
   return (
-    <ChakraProvider>
-      {gameWord === '' && (
-        <Header startNewGame={newGameHandler} resetGame={resetGameHandler} />
-      )}
-      {gameWord && <Game word={gameWord} resetGame={resetGameHandler} />}
-    </ChakraProvider>
+    <ChakraProvider>{gameWord === '' ? <Header /> : <Game />}</ChakraProvider>
   );
 }
 

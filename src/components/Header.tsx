@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useRecoilState } from 'recoil';
+
+import randomWords from 'random-words';
 
 import {
   Container,
@@ -17,14 +20,15 @@ import {
 import Alert from './Alert';
 
 import { useAlert } from '../hooks/useAlert';
+
+import { gameWord as gameWordAtom } from '../atoms/atoms';
+import { lettersOnly } from '../utils';
+
 const ALERT_TIMEOUT_DURATION = 3000;
 
-type Props = {
-  startNewGame: (arg0: string) => void;
-  resetGame: () => void;
-};
+const Header: React.FC = () => {
+  const [gameWord, setGameWord] = useRecoilState(gameWordAtom);
 
-const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
   const [word, setWord] = useState('abc');
   const [alertText, alertType, setAlert] = useAlert(
     '',
@@ -33,10 +37,7 @@ const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
   );
 
   const [loading, setLoading] = useState(false);
-  const {
-    isOpen: componentVisible,
-    onToggle: componentOnToggle,
-  } = useDisclosure();
+
   const { isOpen, onToggle } = useDisclosure();
 
   const submitHandler = (e: any) => {
@@ -52,31 +53,17 @@ const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
     setTimeout(() => {
       setLoading(false);
       setWord('');
-      componentOnToggle();
-      startNewGame(word);
-    }, 2000);
+      setGameWord(word);
+    }, 1500);
   };
-
-  // const startGameHandler = () => {
-  //   setNewGame(false);
-  //   setWord('');
-  //   setReady(false);
-  //   startNewGame(word);
-  // };
 
   const onChangeHandler = (e: any) => {
-    let value = e.target.value;
-    value = value.replace(/[^A-Za-z]/gi, '');
-    setWord(value.toLowerCase());
+    setWord(lettersOnly(e.target.value));
   };
-
-  useEffect(() => {
-    componentOnToggle();
-  }, []);
 
   return (
     <div>
-      <SlideFade in={componentVisible} offsetY='20px' unmountOnExit>
+      <SlideFade in={!gameWord} offsetY='20px' unmountOnExit>
         <Container
           centerContent
           pt={5}
@@ -85,19 +72,19 @@ const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
           borderColor='gray.200'
         >
           <Heading>Hangman</Heading>
-          <Collapse in={!isOpen} animateOpacity>
+          <Collapse in={!isOpen} animateOpacity unmountOnExit>
             <Button
               m={5}
               colorScheme='blue'
               onClick={() => {
-                resetGame();
+                setGameWord('');
                 onToggle();
               }}
             >
               New Game
             </Button>
           </Collapse>
-          <Collapse in={isOpen} animateOpacity>
+          <Collapse in={isOpen} animateOpacity unmountOnExit>
             <Box py='20px' mt={1} rounded='md' shadow='md'>
               <FormControl>
                 <form onSubmit={submitHandler}>
@@ -119,6 +106,7 @@ const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
                   </FormHelperText>
                   <Stack spacing={4} direction='row'>
                     <Button
+                      variant='outline'
                       colorScheme='blue'
                       onClick={() => {
                         setWord('');
@@ -126,6 +114,15 @@ const Header: React.FC<Props> = ({ startNewGame, resetGame }) => {
                       }}
                     >
                       Back
+                    </Button>
+                    <Button
+                      variant='ghost'
+                      colorScheme='blue'
+                      onClick={() => {
+                        setWord(randomWords());
+                      }}
+                    >
+                      Randomword
                     </Button>
                     <Button
                       colorScheme='blue'
