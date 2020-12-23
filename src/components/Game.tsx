@@ -28,11 +28,7 @@ const Game: React.FC = () => {
   const [gameWord, setGameWord] = useRecoilState(gameWordAtom);
   const [gameStatus, setGameStatus] = useRecoilState(gameStatusAtom);
   const [char, setChar] = useState('');
-  const [alertText, alertType, setAlert] = useAlert(
-    '',
-    'info',
-    ALERT_TIMEOUT_DURATION
-  );
+  const [alertText, alertType, setAlert] = useAlert();
   const myRef = useRef(gameWord.split(''));
   const [matches, setMatches] = useState(() =>
     Array(myRef.current.length).fill(false)
@@ -51,20 +47,35 @@ const Game: React.FC = () => {
     if (guesses.correct.length === gameWord.length) {
       setGameStatus({ ...gameStatus, win: true });
     }
-    if (guesses.incorrect.length === 7) {
+    if (guesses.incorrect.length === 2) {
       setGameStatus({ ...gameStatus, lose: true });
     }
   }, [guesses.correct, guesses.incorrect, gameWord.length]);
 
   // Refocus input after alert goes away and previous guess is cleared
   useEffect(() => {
-    if (!alertText) {
+    if (!alertText && inputRef.current) {
       inputRef.current.focus();
     }
   }, [alertText]);
 
+  // If game is over display alert
+  useEffect(() => {
+    if (gameStatus.win) {
+      setAlert({
+        text: 'Congrats, you won!',
+        type: 'success',
+      });
+    }
+    if (gameStatus.lose) {
+      setAlert({
+        text: 'You lost, too bad!',
+        type: 'warning',
+      });
+    }
+  }, [gameStatus]);
+
   const letterHandler = (letter: string) => {
-    console.log(letter);
     setChar(letter);
     if (myRef.current.includes(letter)) {
       if (guesses.correct.includes(letter)) {
@@ -128,26 +139,32 @@ const Game: React.FC = () => {
       >
         <Container centerContent>
           <Flex align='center'>
-            <Text fontSize='2xl'>Guess a letter: </Text>
-            <Input
-              variant='flushed'
-              id='guess-letter'
-              autoFocus
-              maxLength={1}
-              type='text'
-              onChange={(e) =>
-                lettersOnly(e.target.value) !== '' &&
-                letterHandler(lettersOnly(e.target.value))
-              }
-              value={char}
-              w='60px'
-              py={8}
-              ml={5}
-              textAlign='center'
-              fontSize={32}
-              disabled={!!alertText}
-              ref={inputRef}
-            />
+            {gameStatus.win || gameStatus.lose ? (
+              <Text fontSize='2xl'>Game over.</Text>
+            ) : (
+              <>
+                <Text fontSize='2xl'>Guess a letter: </Text>
+                <Input
+                  variant='flushed'
+                  id='guess-letter'
+                  autoFocus
+                  maxLength={1}
+                  type='text'
+                  onChange={(e) =>
+                    lettersOnly(e.target.value) !== '' &&
+                    letterHandler(lettersOnly(e.target.value))
+                  }
+                  value={char}
+                  w='60px'
+                  py={8}
+                  ml={5}
+                  textAlign='center'
+                  fontSize={32}
+                  disabled={!!alertText}
+                  ref={inputRef}
+                />
+              </>
+            )}
           </Flex>
         </Container>
         <Divider orientation='vertical' height='80%' />
