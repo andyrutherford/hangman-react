@@ -21,12 +21,16 @@ import {
 } from '../atoms/atoms';
 import { useRecoilState } from 'recoil';
 import { lettersOnly } from '../utils';
+import { useResetRecoilState } from 'recoil';
 
 const ALERT_TIMEOUT_DURATION = 3000;
+const GUESS_INTERVAL = 2000;
 
 const Game: React.FC = () => {
   const [gameWord, setGameWord] = useRecoilState(gameWordAtom);
   const [gameStatus, setGameStatus] = useRecoilState(gameStatusAtom);
+  const resetGameWord = useResetRecoilState(gameWordAtom);
+  const resetGameStatus = useResetRecoilState(gameStatusAtom);
   const [char, setChar] = useState('');
   const [alertText, alertType, setAlert] = useAlert();
   const myRef = useRef(gameWord.split(''));
@@ -45,12 +49,12 @@ const Game: React.FC = () => {
   const inputRef = useRef<any>();
   useEffect(() => {
     if (guesses.correct.length === gameWord.length) {
-      setGameStatus({ ...gameStatus, win: true });
+      setGameStatus((prevGameStatus) => ({ ...prevGameStatus, win: true }));
     }
-    if (guesses.incorrect.length === 2) {
-      setGameStatus({ ...gameStatus, lose: true });
+    if (guesses.incorrect.length === 7) {
+      setGameStatus((prevGameStatus) => ({ ...prevGameStatus, lose: true }));
     }
-  }, [guesses.correct, guesses.incorrect, gameWord.length]);
+  }, [guesses.correct, guesses.incorrect, gameWord.length, setGameStatus]);
 
   // Refocus input after alert goes away and previous guess is cleared
   useEffect(() => {
@@ -70,10 +74,10 @@ const Game: React.FC = () => {
     if (gameStatus.lose) {
       setAlert({
         text: 'You lost, too bad!',
-        type: 'warning',
+        type: 'error',
       });
     }
-  }, [gameStatus]);
+  }, [gameStatus, setAlert]);
 
   const letterHandler = (letter: string) => {
     setChar(letter);
@@ -112,21 +116,33 @@ const Game: React.FC = () => {
       });
     }
 
-    setTimeout(() => setChar(''), 3000);
+    setTimeout(() => setChar(''), GUESS_INTERVAL);
   };
+
+  // cleanup on unmount
+  useEffect(() => {
+    return () => {
+      console.log('unmount');
+      resetGameWord();
+      resetGameStatus();
+    };
+  }, []);
 
   return (
     <ScaleFade in={true} initialScale={0.9}>
-      <Button
-        onClick={() => {
-          componentOnToggle();
-          setTimeout(() => {
-            setGameWord('');
-          }, 150);
-        }}
-      >
-        Reset game
-      </Button>
+      <Flex justify='space-between' align='center' px={2} mb={3}>
+        <Text>
+          Guesses: {guesses.correct.length + guesses.incorrect.length}
+        </Text>
+        <Button
+          onClick={() => {
+            resetGameWord();
+            resetGameStatus();
+          }}
+        >
+          Reset game
+        </Button>
+      </Flex>
       <Flex
         align='center'
         justify='space-between'
@@ -177,10 +193,6 @@ const Game: React.FC = () => {
 
       <Hangman incorrectGuesses={guesses.incorrect.length} />
       <Letters word={myRef.current} matches={matches} />
-      {JSON.stringify(matches)}
-      <p>
-        Correct: {guesses.correct}, Incorrect: {guesses.incorrect}
-      </p>
     </ScaleFade>
   );
 };

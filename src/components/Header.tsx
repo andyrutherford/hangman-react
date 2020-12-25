@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import randomWords from 'random-words';
+import { ArrowForwardIcon } from '@chakra-ui/icons';
 
 import {
   Container,
@@ -18,6 +19,8 @@ import {
   SlideFade,
 } from '@chakra-ui/react';
 import Alert from './Alert';
+
+import { ReactComponent as Hangman } from '../assets/hangman.svg';
 
 import { useAlert } from '../hooks/useAlert';
 
@@ -73,6 +76,9 @@ const Header: React.FC = () => {
         >
           <Heading>Hangman</Heading>
           <Collapse in={!isOpen} animateOpacity unmountOnExit>
+            <Hangman
+              style={{ margin: '20px', width: '80px', height: '80px' }}
+            />
             <Button
               m={5}
               colorScheme='blue'
@@ -116,18 +122,19 @@ const Header: React.FC = () => {
                       Back
                     </Button>
                     <Button
-                      variant='ghost'
+                      variant='outline'
                       colorScheme='blue'
                       onClick={() => {
                         setWord(randomWords());
                       }}
                     >
-                      Randomword
+                      Random word
                     </Button>
                     <Button
                       colorScheme='blue'
                       type='submit'
                       isLoading={loading}
+                      rightIcon={<ArrowForwardIcon />}
                       loadingText='Starting Game...'
                     >
                       Submit
