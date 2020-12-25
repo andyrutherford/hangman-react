@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Body = styled.div`
   top: 112px;
   height: 500px;
-  left: 218px;
+  left: 243px;
   position: absolute;
   width: 200px;
   > * {

@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { useRecoilState, useResetRecoilState } from 'recoil';
+
 import { useAlert } from '../hooks/useAlert';
 import Hangman from './Hangman';
 import Letters from './Letters';
@@ -18,9 +20,7 @@ import {
   gameWord as gameWordAtom,
   gameStatus as gameStatusAtom,
 } from '../atoms/atoms';
-import { useRecoilState } from 'recoil';
 import { lettersOnly } from '../utils';
-import { useResetRecoilState } from 'recoil';
 
 const ALERT_TIMEOUT_DURATION = 2000;
 const GUESS_INTERVAL = 2000;

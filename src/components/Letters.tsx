@@ -26,6 +26,7 @@ const Letters: React.FC<Props> = ({ word, matches }) => {
           py={8}
           textAlign='center'
           fontSize={word.length > 9 ? 24 : 32}
+          width='2rem'
         />
       ))}
     </Flex>

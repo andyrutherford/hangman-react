@@ -1,16 +1,18 @@
 import { Box, ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { useRecoilValue } from 'recoil';
 
-import './App.css';
-import Game from './components/Game';
+// Components
 import Header from './components/Header';
+import Game from './components/Game';
+import GameOver from './components/GameOver';
 
+// Atoms
 import {
   gameWord as gameWordAtom,
   gameStatus as gameStatusAtom,
 } from './atoms/atoms';
-import { useRecoilValue } from 'recoil';
-import GameOver from './components/GameOver';
 
+// Theme
 import globalTheme from './theme';
 
 const theme = extendTheme(globalTheme);

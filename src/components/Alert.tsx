@@ -3,7 +3,6 @@ import {
   AlertDescription,
   AlertIcon,
 } from '@chakra-ui/react';
-import React from 'react';
 
 type Props = {
   type: 'info' | 'warning' | 'success' | 'error' | undefined;
