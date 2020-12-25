@@ -32,7 +32,7 @@ const ALERT_TIMEOUT_DURATION = 3000;
 const Header: React.FC = () => {
   const [gameWord, setGameWord] = useRecoilState(gameWordAtom);
 
-  const [word, setWord] = useState('abc');
+  const [word, setWord] = useState('');
   const [alertText, alertType, setAlert] = useAlert(
     '',
     'info',
