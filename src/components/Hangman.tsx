@@ -3,6 +3,8 @@ import React from 'react';
 import { Body } from '../UI/Body.styles';
 import { Scaffold } from '../UI/Scaffold.styles';
 
+import { ReactComponent as Noose } from '../assets/noose.svg';
+
 type Props = {
   incorrectGuesses: number;
 };
@@ -13,12 +15,22 @@ const Hangman: React.FC<Props> = React.memo(({ incorrectGuesses }) => {
       <Scaffold>
         <div className='bottom'></div>
         <div className='middle'></div>
-        <div className='top'></div>
+        <div className='top-1'></div>
+        <div className='top-2'></div>
+        <div className='noose'>
+          <div className='rope'></div>
+          <Noose id='noose' />
+        </div>
       </Scaffold>
       <Body>
         {incorrectGuesses >= 1 && <div className='left-leg'></div>}
         {incorrectGuesses >= 2 && <div className='right-leg'></div>}
-        {incorrectGuesses >= 3 && <div className='torso'></div>}
+        {incorrectGuesses >= 3 && (
+          <>
+            <div className='torso'></div>
+            <div className='neck'></div>
+          </>
+        )}
         {incorrectGuesses >= 4 && <div className='left-arm'></div>}
         {incorrectGuesses >= 5 && <div className='right-arm'></div>}
         {incorrectGuesses >= 6 && <div className='head'></div>}

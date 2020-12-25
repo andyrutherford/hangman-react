@@ -1,10 +1,4 @@
-import {
-  Box,
-  ChakraProvider,
-  Container,
-  extendTheme,
-  Flex,
-} from '@chakra-ui/react';
+import { Box, ChakraProvider, extendTheme } from '@chakra-ui/react';
 
 import './App.css';
 import Game from './components/Game';
@@ -27,7 +21,7 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
       <Box
-        w='600px'
+        w='650px'
         align='center'
         justify='center'
         boxShadow='lg'

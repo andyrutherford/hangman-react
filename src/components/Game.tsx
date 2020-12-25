@@ -22,7 +22,7 @@ import { useRecoilState } from 'recoil';
 import { lettersOnly } from '../utils';
 import { useResetRecoilState } from 'recoil';
 
-const ALERT_TIMEOUT_DURATION = 3000;
+const ALERT_TIMEOUT_DURATION = 2000;
 const GUESS_INTERVAL = 2000;
 
 const Game: React.FC = () => {

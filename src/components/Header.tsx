@@ -43,7 +43,7 @@ const Header: React.FC = () => {
 
   const { isOpen, onToggle } = useDisclosure();
 
-  const submitHandler = (e: any) => {
+  const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
     if (word.length < 3 || word.length > 15) {
       return setAlert({
@@ -60,7 +60,7 @@ const Header: React.FC = () => {
     }, 1500);
   };
 
-  const onChangeHandler = (e: any) => {
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWord(lettersOnly(e.target.value));
   };
 
@@ -77,7 +77,7 @@ const Header: React.FC = () => {
           <Heading>Hangman</Heading>
           <Collapse in={!isOpen} animateOpacity unmountOnExit>
             <Hangman
-              style={{ margin: '20px', width: '80px', height: '80px' }}
+              style={{ margin: '40px', width: '80px', height: '80px' }}
             />
             <Button
               m={5}
@@ -110,7 +110,7 @@ const Header: React.FC = () => {
                   <FormHelperText my={2}>
                     Enter a word between 3 and 15 characters, without spaces.
                   </FormHelperText>
-                  <Stack spacing={4} direction='row'>
+                  <Stack spacing={4} direction='row' mt={5}>
                     <Button
                       variant='outline'
                       colorScheme='blue'

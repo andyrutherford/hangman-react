@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 export const Body = styled.div`
-  bottom: 0;
+  top: 112px;
   height: 500px;
-  left: 50%;
+  left: 218px;
   position: absolute;
   width: 200px;
   > * {
@@ -18,6 +18,13 @@ export const Body = styled.div`
     left: 65px;
     top: 30px;
     width: 70px;
+  }
+  .neck {
+    background-color: #fff;
+    height: 3px;
+    width: 10px;
+    top: 109px;
+    left: 95px;
   }
   .torso {
     height: 135px;
@@ -58,14 +65,14 @@ export const Body = styled.div`
   }
   .face .left-eye {
     height: 10px;
-    left: 95px;
+    left: 85px;
     top: 50px;
     transform: rotate(20deg);
     width: 10px;
   }
   .face .right-eye {
     height: 10px;
-    left: 120px;
+    left: 105px;
     top: 60px;
     transform: rotate(20deg);
     width: 10px;
@@ -73,8 +80,8 @@ export const Body = styled.div`
   .face .mouth {
     background-color: #000;
     height: 5px;
-    left: 85px;
-    top: 85px;
+    left: 75px;
+    top: 80px;
     transform: rotate(20deg);
     width: 40px;
   }

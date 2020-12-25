@@ -12,7 +12,7 @@ type Props = {
 
 const Alert: React.FC<Props> = ({ text, type }) => {
   return (
-    <ChakraAlert status={type}>
+    <ChakraAlert status={type} my={3}>
       <AlertIcon />
       <AlertDescription>{text}</AlertDescription>
     </ChakraAlert>
