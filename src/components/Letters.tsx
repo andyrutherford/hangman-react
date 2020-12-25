@@ -14,7 +14,6 @@ const Letters: React.FC<Props> = ({ word, matches }) => {
       border='1px'
       borderColor='gray.200'
       borderRadius='8px'
-      maxW='1000px'
       mx='auto'
     >
       {word.map((a, b) => (
@@ -24,10 +23,9 @@ const Letters: React.FC<Props> = ({ word, matches }) => {
           type='text'
           value={matches[b] ? a : '?'}
           disabled={matches[b] ? false : true}
-          w='60px'
           py={8}
           textAlign='center'
-          fontSize={32}
+          fontSize={word.length > 9 ? 24 : 32}
         />
       ))}
     </Flex>

@@ -7,7 +7,6 @@ import Alert from './Alert';
 import {
   Container,
   Input,
-  useDisclosure,
   ScaleFade,
   Flex,
   Divider,
@@ -27,15 +26,16 @@ const ALERT_TIMEOUT_DURATION = 3000;
 const GUESS_INTERVAL = 2000;
 
 const Game: React.FC = () => {
-  const [gameWord, setGameWord] = useRecoilState(gameWordAtom);
+  const [gameWord] = useRecoilState(gameWordAtom);
   const [gameStatus, setGameStatus] = useRecoilState(gameStatusAtom);
   const resetGameWord = useResetRecoilState(gameWordAtom);
   const resetGameStatus = useResetRecoilState(gameStatusAtom);
   const [char, setChar] = useState('');
+  const [guessCount, setGuessCount] = useState(0);
   const [alertText, alertType, setAlert] = useAlert();
-  const myRef = useRef(gameWord.split(''));
+  const currentGameWord = useRef(gameWord.split(''));
   const [matches, setMatches] = useState(() =>
-    Array(myRef.current.length).fill(false)
+    Array(currentGameWord.current.length).fill(false)
   );
   const [guesses, setGuesses] = useState<{
     correct: string[];
@@ -45,8 +45,9 @@ const Game: React.FC = () => {
     incorrect: [],
   });
 
-  const { isOpen, onToggle: componentOnToggle } = useDisclosure();
   const inputRef = useRef<any>();
+
+  // If player wins/loses game
   useEffect(() => {
     if (guesses.correct.length === gameWord.length) {
       setGameStatus((prevGameStatus) => ({ ...prevGameStatus, win: true }));
@@ -79,9 +80,19 @@ const Game: React.FC = () => {
     }
   }, [gameStatus, setAlert]);
 
+  // cleanup on unmount
+  useEffect(() => {
+    return () => {
+      resetGameWord();
+      resetGameStatus();
+    };
+  }, [resetGameWord, resetGameStatus]);
+
   const letterHandler = (letter: string) => {
+    setGuessCount(guessCount + 1);
     setChar(letter);
-    if (myRef.current.includes(letter)) {
+
+    if (currentGameWord.current.includes(letter)) {
       if (guesses.correct.includes(letter)) {
         setAlert({
           text: 'You already chose this letter.',
@@ -94,21 +105,31 @@ const Game: React.FC = () => {
           type: 'success',
           duration: ALERT_TIMEOUT_DURATION,
         });
+        const matchIndexes = currentGameWord.current.reduce(
+          (a: number[], curr: string, index: number) => {
+            if (curr === letter) {
+              a.push(index);
+            }
+            return a;
+          },
+          []
+        );
+        const newMatchesArr = [...matches];
+        matchIndexes.forEach((a: number) => (newMatchesArr[a] = true));
         setGuesses((currentGuesses) => ({
           ...currentGuesses,
-          correct: [...currentGuesses.correct, letter],
+          correct: [
+            ...currentGuesses.correct,
+            ...Array(matchIndexes.length).fill(letter),
+          ],
         }));
-        const matchIndex = myRef.current.findIndex((i) => i === letter);
-        setMatches((matches) =>
-          matches.map((m, i) => (i === matchIndex ? 'true' : m))
-        );
+        setMatches(newMatchesArr);
       }
     } else {
       setGuesses((currentGuesses) => ({
         ...currentGuesses,
         incorrect: [...currentGuesses.incorrect, letter],
       }));
-      // setAlertText('No Match', 1000);
       setAlert({
         text: 'Nope!',
         type: 'error',
@@ -119,28 +140,17 @@ const Game: React.FC = () => {
     setTimeout(() => setChar(''), GUESS_INTERVAL);
   };
 
-  // cleanup on unmount
-  useEffect(() => {
-    return () => {
-      console.log('unmount');
-      resetGameWord();
-      resetGameStatus();
-    };
-  }, []);
-
   return (
     <ScaleFade in={true} initialScale={0.9}>
       <Flex justify='space-between' align='center' px={2} mb={3}>
-        <Text>
-          Guesses: {guesses.correct.length + guesses.incorrect.length}
-        </Text>
+        <Text>Guesses: {guessCount}</Text>
         <Button
           onClick={() => {
             resetGameWord();
             resetGameStatus();
           }}
         >
-          Reset game
+          New game
         </Button>
       </Flex>
       <Flex
@@ -192,7 +202,7 @@ const Game: React.FC = () => {
       </Flex>
 
       <Hangman incorrectGuesses={guesses.incorrect.length} />
-      <Letters word={myRef.current} matches={matches} />
+      <Letters word={currentGameWord.current} matches={matches} />
     </ScaleFade>
   );
 };
